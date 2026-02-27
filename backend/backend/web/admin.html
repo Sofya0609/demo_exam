@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора - Банкетам.Нет</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-height: 700px;
+        }
+
+        .header {
+            background: linear-gradient(to right, #198c3e, #14672e);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #14672e;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .content {
+            padding: 40px;
+            display: flex;
+            min-height: 500px;
+        }
+
+        .login-section {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .login-form {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #14672e;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #198c3e;
+            box-shadow: 0 0 0 3px rgb(81, 207, 120);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #198c3e, #14672e);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, #198c3e, #14672e);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-error {
+            background: #fee;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+        }
+
+        .alert-success {
+            background: #dfffe6;
+            border-left: 4px solid #27ae60;
+            color: #229954;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .admin-container {
+                border-radius: 10px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .login-section {
+                padding: 20px 10px;
+            }
+
+            .login-form {
+                padding: 30px 20px;
+            }
+
+            .header {
+                padding: 20px;
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-container">
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">М</div>
+            <h1>Панель администратора - Банкетам.Нет</h1>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="login-section" id="loginSection">
+            <div class="login-form">
+                <div class="login-title">Вход в панель управления</div>
+
+                <div class="alert alert-error" id="errorAlert"></div>
+                <div class="alert alert-success" id="successAlert"></div>
+
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="login">Логин или Email:</label>
+                        <input type="text"
+                               id="login"
+                               name="login"
+                               class="form-control"
+                               placeholder="Введите ваш логин или email"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Пароль:</label>
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Введите ваш пароль"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Войти как администратор
+                        </button>
+                    </div>
+
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Авторизация...</p>
+                    </div>
+                </form>
+
+                <div class="footer">
+                    <p>Доступ только для авторизованных администраторов</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-section" id="dashboardSection" style="display: none; width: 100%;">
+            <!-- Контент панели управления будет загружаться динамически -->
+            <div class="dashboard-header">
+                <h2>Панель управления</h2>
+                <button class="logout-btn" onclick="logout()">Выйти</button>
+            </div>
+
+            <div class="dashboard-content" id="dashboardContent">
+                <p>Загрузка панели управления...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Базовый URL API
+    const API_BASE_URL = '/api';
+
+    // Элементы DOM
+    const loginSection = document.getElementById('loginSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const dashboardContent = document.getElementById('dashboardContent');
+    const errorAlert = document.getElementById('errorAlert');
+    const successAlert = document.getElementById('successAlert');
+    const loadingElement = document.getElementById('loading');
+    const loginForm = document.getElementById('adminLoginForm');
+
+    // Проверяем, есть ли сохраненный токен
+    document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('admin_token');
+        if (token) {
+            checkAdminAccess(token);
+        }
+    });
+
+    // Обработка формы входа
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const login = document.getElementById('login').value;
+        const password = document.getElementById('password').value;
+
+        // Скрываем предыдущие сообщения
+        hideAlerts();
+        showLoading();
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/admin-login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    login: login,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            hideLoading();
+
+            if (data.success && data.token) {
+                // Сохраняем токен
+                localStorage.setItem('admin_token', data.token);
+                localStorage.setItem('admin_user', JSON.stringify(data.user));
+
+                showSuccess('Вход выполнен успешно!');
+
+                // Переключаем на панель управления
+                setTimeout(() => {
+                    loginSection.style.display = 'none';
+                    dashboardSection.style.display = 'block';
+                    loadDashboard(data.token);
+                }, 1500);
+            } else {
+                showError(data.message || 'Ошибка входа');
+            }
+        } catch (error) {
+            hideLoading();
+            showError('Ошибка сети или сервера: ' + error.message);
+        }
+    });
+
+    // Проверить доступ администратора по токену
+    async function checkAdminAccess(token) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/check-admin?token=${token}`);
+            const data = await response.json();
+
+            if (data.success && data.has_access) {
+                loginSection.style.display = 'none';
+                dashboardSection.style.display = 'block';
+                loadDashboard(token);
+            } else {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+            }
+        } catch (error) {
+            console.error('Ошибка проверки доступа:', error);
+        }
+    }
+
+    // Загрузить панель управления
+    async function loadDashboard(token) {
+        try {
+
+            const userData = JSON.parse(localStorage.getItem('admin_user') || '{}');
+
+            dashboardContent.innerHTML = `
+                    <div style="padding: 20px;">
+                        <h3>Добро пожаловать, ${userData.username || 'Администратор'}!</h3>
+                        <p>Email: ${userData.email || 'Не указан'}</p>
+                        <p>Дата регистрации: ${userData.created_at || 'Не указана'}</p>
+
+                        <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #3498db;">
+                                <h4>Пользователи</h4>
+                                <p id="usersCount">Загрузка...</p>
+                                <button onclick="loadUsers()" style="margin-top: 10px; padding: 8px 16px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                    Управление
+                                </button>
+                            </div>
+
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #2ecc71;">
+                                <h4>Статистика</h4>
+                                <p>За сегодня: 0</p>
+                                <p>За месяц: 0</p>
+                            </div>
+
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #9b59b6;">
+                                <h4>Настройки</h4>
+                                <p>Конфигурация системы</p>
+                                <button style="margin-top: 10px; padding: 8px 16px; background: #9b59b6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                    Настроить
+                                </button>
+                            </div>
+
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #e74c3c;">
+                                <h4>Безопасность</h4>
+                                <p>Последний вход: сейчас</p>
+                                <button onclick="logout()" style="margin-top: 10px; padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                    Сменить пользователя
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            // Загружаем статистику
+            loadStatistics(token);
+
+        } catch (error) {
+            dashboardContent.innerHTML = `
+                    <div style="color: #e74c3c; padding: 20px;">
+                        <h3>Ошибка загрузки панели управления</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+        }
+    }
+
+    // Загрузить статистику
+    async function loadStatistics(token) {
+
+        // Для примеси:
+        setTimeout(() => {
+            const usersCountElement = document.getElementById('usersCount');
+            if (usersCountElement) {
+                usersCountElement.textContent = 'Всего: 15 пользователей';
+            }
+        }, 1000);
+    }
+
+    // Загрузить пользователей
+    async function loadUsers() {
+        dashboardContent.innerHTML = `
+                <div style="padding: 20px;">
+                    <h3>Управление пользователями</h3>
+                    <div id="usersList">Загрузка...</div>
+                    <button onclick="loadDashboard(localStorage.getItem('admin_token'))" style="margin-top: 20px; padding: 10px 20px; background: #7f8c8d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Назад
+                    </button>
+                </div>
+            `;
+
+    }
+
+    // Выход
+    function logout() {
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_user');
+
+        // Показываем сообщение
+        showSuccess('Вы успешно вышли из системы');
+
+        // Возвращаем к форме входа
+        setTimeout(() => {
+            dashboardSection.style.display = 'none';
+            loginSection.style.display = 'block';
+            hideAlerts();
+            loginForm.reset();
+        }, 1500);
+    }
+
+    // Вспомогательные функции
+    function showError(message) {
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function showSuccess(message) {
+        successAlert.textContent = message;
+        successAlert.style.display = 'block';
+        successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideAlerts() {
+        errorAlert.style.display = 'none';
+        successAlert.style.display = 'none';
+    }
+
+    function showLoading() {
+        loadingElement.style.display = 'block';
+        loginForm.querySelector('button[type="submit"]').disabled = true;
+    }
+
+    function hideLoading() {
+        loadingElement.style.display = 'none';
+        loginForm.querySelector('button[type="submit"]').disabled = false;
+    }
+
+    window.addEventListener('beforeunload', function() {
+    });
+</script>
+</body>
+</html>
